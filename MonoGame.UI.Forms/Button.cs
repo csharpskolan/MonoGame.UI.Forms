@@ -36,15 +36,13 @@ namespace MonoGame.UI.Forms
                 topRightOffset = helper.DrawTextureWithOffset(start + new Vector2(Size.X, 0), BtnRightTexture, blend, DrawHelper.AlignOffset.TopRight);
 
             if (string.IsNullOrEmpty(BtnMiddleTexture))
-                helper.DrawRectangle(rectangle, BackgroundColor);
+                helper.DrawRectangle(rectangle, BackgroundColor.Blend(blend));
             else
                 helper.DrawTextureRepeat(start + new Vector2(topLeftOffset.X, 0),
                     start + new Vector2(Size.X - topRightOffset.X, topLeftOffset.Y), BtnMiddleTexture, blend);
 
             var txtSize = helper.MeasureString(FontName, Text);
-            float y = (Size.Y / 2 - txtSize.Y / 2);
-            float x = (Size.X / 2 - txtSize.X / 2);
-            helper.DrawString(this, Location + new Vector2(x, y) + offset, Text, TextColor);
+            helper.DrawString(this, Location + AlignmentHelper.Align(Size, txtSize, TextAlign) + offset, Text, TextColor);
         }
 
         internal override void LoadContent(DrawHelper helper)

@@ -44,11 +44,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlignmentHelper.cs" />
     <Compile Include="Button.cs" />
     <Compile Include="ContentAlignment.cs" />
     <Compile Include="Control.cs" />
     <Compile Include="ControlManager.cs" />
     <Compile Include="DrawHelper.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Form.cs" />
     <Compile Include="IControls.cs" />
     <Compile Include="Label.cs" />
