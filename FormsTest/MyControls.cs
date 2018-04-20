@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using MonoGame.UI.Forms;
+using MonoGame.UI.Forms.Effects;
 
 namespace FormsTest
 {
@@ -35,7 +31,7 @@ namespace FormsTest
                 Title = "Calculator",
                 IsMovable = true,
                 Location = new Vector2(100, 100),
-                Size = new Vector2(260, 290),
+                Size = new Vector2(230, 290),
             };
             SetDefaultFormTextures(form1);
 
@@ -90,7 +86,13 @@ namespace FormsTest
             SetDefaultFormTextures(form2);
 
             // btn
-            btn = new Button() { Text = "Button 1", Size = new Vector2(90, 45), Location = new Vector2(20, 40) };
+            btn = new Button()
+            {
+                Text = "Button 1",
+                Size = new Vector2(90, 45),
+                Location = new Vector2(20, 40),
+                HoverEffect =  new ZoomEffect() { Duration = 15, ZoomTo = 1.2f }
+            };
             SetButtonTextures("Blue", btn);
             btn.Clicked += Btn_Clicked;
 
@@ -114,14 +116,99 @@ lines!"
             bar = new Progressbar() { Location = new Vector2(30, 100), Size = new Vector2(200, 25) };
 
             form2.Controls.AddRange(new Control[]{btn, lbl1, lbl2, bar, txtArea});
+
+            //form3
+            var form3 = new Form()
+            {
+                Title = "Alignment test",
+                IsMovable = true,
+                Location = new Vector2(350, 250),
+                Size = new Vector2(180, 200)
+            };
+
+            var btnTL = new Button() { Text = "TL", Size = new Vector2(45, 45), Location = new Vector2(10, 40), TextAlign = ContentAlignment.TopLeft};
+            var btnTC = new Button() { Text = "TC", Size = new Vector2(45, 45), Location = new Vector2(60, 40), TextAlign = ContentAlignment.TopCenter};
+            var btnTR = new Button() { Text = "TR", Size = new Vector2(45, 45), Location = new Vector2(110, 40), TextAlign = ContentAlignment.TopRight};
+            var btnML = new Button() { Text = "ML", Size = new Vector2(45, 45), Location = new Vector2(10, 90), TextAlign = ContentAlignment.MiddleLeft};
+            var btnMC = new Button() { Text = "MC", Size = new Vector2(45, 45), Location = new Vector2(60, 90), TextAlign = ContentAlignment.MiddleCenter};
+            var btnMR = new Button() { Text = "MR", Size = new Vector2(45, 45), Location = new Vector2(110, 90), TextAlign = ContentAlignment.MiddleRight};
+            var btnBL = new Button() { Text = "BL", Size = new Vector2(45, 45), Location = new Vector2(10, 140), TextAlign = ContentAlignment.BottomLeft};
+            var btnBC = new Button() { Text = "BC", Size = new Vector2(45, 45), Location = new Vector2(60, 140), TextAlign = ContentAlignment.BottomCenter};
+            var btnBR = new Button() { Text = "BR", Size = new Vector2(45, 45), Location = new Vector2(110, 140), TextAlign = ContentAlignment.BottomRight};
+
+            SetButtonTextures("Red", btnTL, btnTC, btnTR, btnML, btnMC, btnMR, btnBL, btnBC, btnBR);
+            var form3Buttons = new Control[] { btnTL, btnTC, btnTR, btnML, btnMC, btnMR, btnBL, btnBC, btnBR };
+            form3.Controls.AddRange(form3Buttons);
+
+            SetDefaultFormTextures(form3);
+
+            //form4
+            var form4 = new Form()
+            {
+                Title = "Primitives test",
+                IsMovable = true,
+                Location = new Vector2(350, 20),
+                Size = new Vector2(140, 200)
+            };
+            SetDefaultFormTextures(form4);
+
+            var btnCircle = new Button() { Text = "Circle", Size = new Vector2(75, 45), Location = new Vector2(10, 40) };
+            var btnLine = new Button() { Text = "Line", Size = new Vector2(75, 45), Location = new Vector2(10, 90) };
+            var btnRectangle = new Button() { Text = "Rectangle", Size = new Vector2(75, 45), Location = new Vector2(10, 140) };
+
+            SetButtonTextures("Blue", btnCircle, btnLine, btnRectangle);
+            var form4Buttons = new Control[] { btnLine, btnCircle, btnRectangle };
+            btnCircle.Clicked += BtnAddPrimitive;
+            btnLine.Clicked += BtnAddPrimitive;
+            btnRectangle.Clicked += BtnAddPrimitive;
+            form4.Controls.AddRange(form4Buttons);
+
             Controls.Add(form1);
             Controls.Add(form2);
+            Controls.Add(form3);
+            Controls.Add(form4);
+        }
+
+        private void BtnAddPrimitive(object sender, EventArgs e)
+        {
+            var btn = sender as Button;
+            var rnd = new Random();
+            Control control = null;
+
+            switch (btn.Text)
+            {
+                case "Circle":
+                    control = new Circle(new Vector2(rnd.Next(10, 500), rnd.Next(10, 400)), rnd.Next(5, 50));
+                    break;
+                case "Line":
+                    control = new Line(new Vector2(rnd.Next(10,500), rnd.Next(10, 400)),
+                        new Vector2(rnd.Next(10, 500), rnd.Next(10,400))) { LineThickness = rnd.Next(1, 20)};
+                    break;
+                default:
+                    control = new FilledRectangle(rnd.Next(10, 500), rnd.Next(10, 400), rnd.Next(1, 100), rnd.Next(1, 100));
+                    break;
+            }
+
+            control.MouseEnter += PrimitiveMouseEnter;
+            control.MouseLeave += PrimitiveMouseLeave;
+            Controls.Add(control);
+        }
+
+        private void PrimitiveMouseLeave(object sender, EventArgs e)
+        {
+            Control c = sender as Control;
+            c.BackgroundColor = Color.White;
+        }
+
+        private void PrimitiveMouseEnter(object sender, EventArgs e)
+        {
+            Control c = sender as Control;
+            c.BackgroundColor = Color.DarkCyan;
         }
 
         private void Btn_Clicked(object sender, EventArgs e)
         {
             btn.Text = "Clicked!";
-            //txtArea.Text += "newline" + Environment.NewLine;
             bar.Value += 10;
         }
 

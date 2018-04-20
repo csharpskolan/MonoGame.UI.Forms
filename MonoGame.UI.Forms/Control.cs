@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using MonoGame.UI.Forms.Effects;
 
 namespace MonoGame.UI.Forms
 {
@@ -18,6 +19,8 @@ namespace MonoGame.UI.Forms
         public Rectangle HitBox => new Rectangle((int)Location.X, (int)Location.Y, (int)Size.X, (int)Size.Y);
         public int ZIndex { get; set; }
 
+        public Effect HoverEffect { get; set; }
+
         public event EventHandler Clicked;
         public event EventHandler MouseDown;
         public event EventHandler MouseUp;
@@ -26,11 +29,19 @@ namespace MonoGame.UI.Forms
 
         protected bool IsPressed;
         protected bool IsHovering;
-    
+        protected float Zoom = 1.0f;
+
+        private bool _wasHovering;
+
         protected Control()
         {
             FontName = "defaultFont";
             IsVisible = true;
+        }
+
+        public virtual bool Contains(Point point)
+        {
+            return HitBox.Contains(point);
         }
 
         internal abstract void Draw(DrawHelper helper, Vector2 offset);
@@ -39,6 +50,21 @@ namespace MonoGame.UI.Forms
         {
             if(IsVisible)
                 Draw(helper, Vector2.Zero);
+        }
+
+        internal virtual void Update(GameTime gameTime)
+        {
+            Zoom = 1.0f;
+
+            if (IsHovering && HoverEffect != null)
+            {
+                if(!_wasHovering)
+                    HoverEffect.Reset();
+                HoverEffect.Update(gameTime);
+                Zoom = HoverEffect.Zoom;
+            }
+
+            _wasHovering = IsHovering;
         }
 
         internal virtual void LoadContent(DrawHelper helper)

@@ -46,16 +46,21 @@
   <ItemGroup>
     <Compile Include="AlignmentHelper.cs" />
     <Compile Include="Button.cs" />
+    <Compile Include="Circle.cs" />
     <Compile Include="ContentAlignment.cs" />
     <Compile Include="Control.cs" />
     <Compile Include="ControlManager.cs" />
     <Compile Include="DrawHelper.cs" />
+    <Compile Include="Effects\Effect.cs" />
+    <Compile Include="Effects\ZoomEffect.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Form.cs" />
     <Compile Include="IControls.cs" />
     <Compile Include="Label.cs" />
+    <Compile Include="Line.cs" />
     <Compile Include="Progressbar.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rectangle.cs" />
     <Compile Include="TextArea.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

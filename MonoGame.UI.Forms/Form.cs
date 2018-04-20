@@ -79,10 +79,18 @@ namespace MonoGame.UI.Forms
             }
         }
 
+        internal override void Update(GameTime gameTime)
+        {
+            foreach (var control in Controls)
+            {
+                control.Update(gameTime);
+            }
+        }
+
         Control IControls.FindControlAt(Point position)
         {
             var point = position - Location.ToPoint();
-            var control = Controls.LastOrDefault(c => c.HitBox.Contains(point));
+            var control = Controls.LastOrDefault(c => c.Contains(point));
             return control ?? this;
         }
 

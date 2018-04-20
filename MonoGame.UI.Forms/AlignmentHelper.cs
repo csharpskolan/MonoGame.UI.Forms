@@ -9,30 +9,45 @@ namespace MonoGame.UI.Forms
 {
     class AlignmentHelper
     {
-        public static Vector2 Align(Vector2 container, Vector2 content, ContentAlignment alignment)
+        public static Vector2 Align(Vector2 container, Vector2 content, ContentAlignment alignment, bool round = true)
         {
+            var ret = Vector2.Zero;
+
             switch (alignment)
             {
                 case ContentAlignment.BottomCenter:
-                    return new Vector2(container.X / 2 - content.X / 2, container.Y - content.Y);
+                    ret = new Vector2(container.X / 2 - content.X / 2, container.Y - content.Y);
+                    break;
                 case ContentAlignment.BottomRight:
-                    return new Vector2(container.X - content.X, container.Y - content.Y);
+                    ret = new Vector2(container.X - content.X, container.Y - content.Y);
+                    break;
                 case ContentAlignment.BottomLeft:
-                    return new Vector2(0, container.Y - content.Y);
+                    ret = new Vector2(0, container.Y - content.Y);
+                    break;
                 case ContentAlignment.MiddleCenter:
-                    return new Vector2(container.X / 2 - content.X / 2, container.Y / 2 - content.Y / 2);
+                    ret = new Vector2(container.X / 2 - content.X / 2, container.Y / 2 - content.Y / 2);
+                    break;
                 case ContentAlignment.MiddleLeft:
-                    return new Vector2(0, container.Y / 2 - content.Y / 2);
+                    ret = new Vector2(0, container.Y / 2 - content.Y / 2);
+                    break;
                 case ContentAlignment.MiddleRight:
-                    return new Vector2(container.X - content.X, container.Y / 2 - content.Y / 2);
+                    ret = new Vector2(container.X - content.X, container.Y / 2 - content.Y / 2);
+                    break;
                 case ContentAlignment.TopCenter:
-                    return new Vector2(container.X / 2 - content.X / 2, 0);
+                    ret = new Vector2(container.X / 2 - content.X / 2, 0);
+                    break;
                 case ContentAlignment.TopLeft:
-                    return new Vector2(0, 0);
+                    ret = new Vector2(0, 0);
+                    break;
                 case ContentAlignment.TopRight:
-                    return new Vector2(container.X - content.X, 0);
+                    ret = new Vector2(container.X - content.X, 0);
+                    break;
             }
-            return Vector2.Zero;
+
+            if(round)
+                ret = new Vector2((float)Math.Round(ret.X), (float)Math.Round(ret.Y));
+
+            return ret;
         }
     }
 }

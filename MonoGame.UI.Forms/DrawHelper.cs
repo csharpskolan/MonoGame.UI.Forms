@@ -17,6 +17,7 @@ namespace MonoGame.UI.Forms
         private Dictionary<string, SpriteFont> _fontCache = new Dictionary<string, SpriteFont>();
 
         private Texture2D whiteTexture;
+        private Texture2D circleTexture;
 
         public DrawHelper(SpriteBatch spriteBatch, ContentManager manager, GraphicsDevice device)
         {
@@ -31,6 +32,15 @@ namespace MonoGame.UI.Forms
                 data[i] = Color.White;
 
             whiteTexture.SetData(data);
+
+            // create circle texture
+
+            size = 512;
+            circleTexture = new Texture2D(device, size, size);
+
+            data = new Color[size * size];
+            DrawFilledCircle(size / 2, size/2, size/2 - 1, Color.White, size, size, data);
+            circleTexture.SetData<Color>(data);
         }
 
         public void ReloadResources(IEnumerable<Control> controls)
@@ -41,10 +51,29 @@ namespace MonoGame.UI.Forms
             }
         }
 
-        public void DrawString(Control control, Vector2 position, string text, Color color)
+        #region Public Draw Methods
+
+        public void DrawCircle(Vector2 center, float radius, Color color)
+        {
+            float scale = radius / 256.0f;
+            _spriteBatch.Draw(circleTexture, center, null, color, 0f, new Vector2(256, 256), scale, SpriteEffects.None, 0f);
+        }
+
+        public void DrawLine(Vector2 pos1, Vector2 pos2, Color color, int width = 1)
+        {
+            Vector2 diff = (pos1 - pos2);
+            float length = diff.Length();
+            float angle = (float)Math.Atan2(diff.Y, diff.X) + MathHelper.Pi;
+
+            _spriteBatch.Draw(whiteTexture, new Rectangle((int)(pos1.X), (int)(pos1.Y), (int)length, width),
+                null, color, angle, new Vector2(0, whiteTexture.Width / 2.0f), SpriteEffects.None, 0f);
+        }
+
+        public void DrawString(Control control, Vector2 position, string text, Color color, float zoom = 1.0f)
         {
             var font = LoadFont(control.FontName);
-            _spriteBatch.DrawString(font, text, position, color, 0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0);
+            var size = font.MeasureString(text);
+            _spriteBatch.DrawString(font, text, position, color, 0f, Vector2.Zero, zoom, SpriteEffects.None, 0);
         }
 
         public void DrawRectangle(Rectangle rectangle, Color color)
@@ -105,6 +134,8 @@ namespace MonoGame.UI.Forms
             }
         }
 
+        #endregion
+
         public Vector2 MeasureString(string asset, string text)
         {
             var font = LoadFont(asset);
@@ -139,5 +170,33 @@ namespace MonoGame.UI.Forms
             BottomRight,
             Center
         }
+
+        #region Private Methods
+
+        private void DrawFilledCircle(int x, int y, int radius, Color color, int width, int height, Color[] data)
+        {
+            int sx = -radius;
+            int sy = 0;
+            int error = 2 - 2 * radius;
+
+            while (sx <= 0)
+            {
+                for (int i = sy; i >= 0; i--)
+                {
+                    data[(x - sx) + (y - i) * width] = color;
+                    data[(x - sx) + (y + i) * width] = color;
+                    data[(x + sx) + (y + i) * width] = color;
+                    data[(x + sx) + (y - i) * width] = color;
+                }
+
+                int r = error;
+                if (r <= sy)
+                    error += ++sy * 2 + 1;
+                if (r > sx || error > y)
+                    error += ++sx * 2 + 1;
+            }
+        }
+
+        #endregion
     }
 }

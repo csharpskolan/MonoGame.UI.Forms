@@ -11,7 +11,7 @@ namespace MonoGame.UI.Forms
         private SpriteBatch _spriteBatch;
         private DrawHelper _drawHelper;
         private Control _selectedControl;
-        private Control _hoverControl;
+        private Control _lastHoveredControl;
 
         private Vector2 _dragPositionOffset;
         private bool _isDragging;
@@ -51,22 +51,21 @@ namespace MonoGame.UI.Forms
             var mouseState = Mouse.GetState();
 
             var hoverControl = FindControlAt(mouseState.Position, Controls);
-            if (_hoverControl != null)
+            if (_lastHoveredControl != hoverControl)
             {
-                if (_hoverControl != hoverControl)
-                {
-                    _hoverControl.OnMouseLeave();
-                    hoverControl?.OnMouseEnter();
-                }
+                _lastHoveredControl?.OnMouseLeave();
+                hoverControl?.OnMouseEnter();
             }
-            _hoverControl = hoverControl;
+            
+
+            _lastHoveredControl = hoverControl;
 
             if (mouseState.LeftButton == ButtonState.Pressed
                 && _prevMouseState.LeftButton == ButtonState.Released)
             {
-                if (_hoverControl != null)
+                if (_lastHoveredControl != null)
                 {
-                    _selectedControl = _hoverControl;
+                    _selectedControl = _lastHoveredControl;
                     _selectedControl.OnMouseDown();
 
                     if (_selectedControl is Form)
@@ -102,6 +101,11 @@ namespace MonoGame.UI.Forms
 
             Controls = Controls.OrderBy(c => c.ZIndex).ToList();
             _prevMouseState = mouseState;
+
+            foreach (var control in Controls)
+            {
+                control.Update(gameTime);
+            }
         }
 
         public override void Draw(GameTime gameTime)
@@ -122,7 +126,7 @@ namespace MonoGame.UI.Forms
 
         private Control FindControlAt(Point position, IEnumerable<Control> controls)
         {
-            var control = controls.LastOrDefault(c => c.HitBox.Contains(position));
+            var control = controls.LastOrDefault(c => c.Contains(position));
             if (control is IControls)
                 return ((IControls) control).FindControlAt(position);
             else

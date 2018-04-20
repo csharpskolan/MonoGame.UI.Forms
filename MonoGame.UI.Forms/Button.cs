@@ -42,7 +42,7 @@ namespace MonoGame.UI.Forms
                     start + new Vector2(Size.X - topRightOffset.X, topLeftOffset.Y), BtnMiddleTexture, blend);
 
             var txtSize = helper.MeasureString(FontName, Text);
-            helper.DrawString(this, Location + AlignmentHelper.Align(Size, txtSize, TextAlign) + offset, Text, TextColor);
+            helper.DrawString(this, Location + AlignmentHelper.Align(Size, txtSize, TextAlign) + offset, Text, TextColor, Zoom);
         }
 
         internal override void LoadContent(DrawHelper helper)
