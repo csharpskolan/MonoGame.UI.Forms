@@ -72,7 +72,6 @@ namespace MonoGame.UI.Forms
         public void DrawString(Control control, Vector2 position, string text, Color color, float zoom = 1.0f)
         {
             var font = LoadFont(control.FontName);
-            var size = font.MeasureString(text);
             _spriteBatch.DrawString(font, text, position, color, 0f, Vector2.Zero, zoom, SpriteEffects.None, 0);
         }
 
